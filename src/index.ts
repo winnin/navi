@@ -3,6 +3,7 @@ dotenv.config()
 import { App } from '@slack/bolt'
 import {callOpenAI} from './openai'
 
+
 const token = process.env.SLACK_BOT_TOKEN
 
 const loadingAnswerMessage = process.env.LOADING_MESSAGE
@@ -60,7 +61,7 @@ app.event('app_mention', async ({ event, say }) => {
   const assistanteResponse = await callOpenAI(message.text.replaceAll(/<@\w+>/g,'').trim(), threadTs)
   
   app.client.chat.update({
-    text: `<@${message.user}> ${assistanteResponse?assistanteResponse.content[0].text.value?.replaceAll(/【[^】]+】/g,''): errorMessage}`,
+    text: `<@${message.user}> ${assistanteResponse?assistanteResponse?.replaceAll(/【[^】]+】/g,''): errorMessage}`,
     token,
     channel:sentMessage.channel,
     ts:sentMessage.ts
