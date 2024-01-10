@@ -32,7 +32,7 @@
     "@slack/bolt": "^3.15.0",
     "dotenv": "^16.0.3",
     "level-rocksdb": "^5.0.0",
-    "openai": "^4.19.0",
+    "openai": "^4.24.0",
     "rocksdb": "^5.2.1"
   }
 }
