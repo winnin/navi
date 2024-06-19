@@ -1,11 +1,32 @@
-import OpenAI from 'openai'
+//import OpenAI from 'openai'
+import { OpenAI } from "langchain/llms/openai";
+import {OpenAIAssistantRunnable} from "langchain/experimental/openai_assistant"
 import {getDb} from './rocksdb'
+import { OpenAIAssistantFinish } from "langchain/dist/experimental/openai_assistant/schema";
 
 const assistantId = process.env.OPENAI_ASSISTANT_ID
 
-const openai = new OpenAI()
+const agent = new OpenAIAssistantRunnable({assistantId,asAgent:true})
+export async function callOpenAI (question:string, slackThreadId:string):Promise<string> {
+  try{
+    const db = getDb()
+    const openAiThreadId = await db.get(`${slackThreadId}`).catch(err=>null)
+    const args = {
+      content:question,
+      ...(openAiThreadId?{threadId:openAiThreadId}:{})
+    }
+    const {returnValues, threadId} = (await agent.invoke(args) as OpenAIAssistantFinish)
+    if(!openAiThreadId){
+      await db.put(`${slackThreadId}`,threadId)
+    }
+    return returnValues.output
+  }catch(err){
+    console.log(err)
+    return null
+  }
+}
 
-export async function callOpenAI (question, slackThreadId) {
+/*export async function callOpenAI (question, slackThreadId) {
   try{
     const db = getDb()
     let openAiThreadId = await db.get(`${slackThreadId}`).catch(err=>null)
@@ -40,4 +61,4 @@ export async function callOpenAI (question, slackThreadId) {
     console.log(err)
     return null
   }
-}
+}*/
