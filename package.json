@@ -33,7 +33,7 @@
     "dotenv": "^16.0.3",
     "langchain": "^0.0.203",
     "level-rocksdb": "^5.0.0",
-    "openai": "^4.19.0",
+    "openai": "^4.51.0",
     "rocksdb": "^5.2.1"
   }
 }
